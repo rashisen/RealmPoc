@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+using AutoMapper;
 
 namespace Realm_Api_Poc.Controllers
 {
@@ -15,20 +16,23 @@ namespace Realm_Api_Poc.Controllers
     {
 
         private readonly ILogger<GuitarController> _logger;
+        private readonly IMapper _mapper;
 
-        public GuitarController(ILogger<GuitarController> logger)
+        public GuitarController(ILogger<GuitarController> logger, IMapper mapper)
         {
             _logger = logger;
+            _mapper = mapper;
         }
 
         // create a new Guitar object
         [HttpPost]
-        public Guid AddGuitar(GuitarDTO guitar)
+        public Guid AddGuitar(Guitar guitar)
         {
+            var obj = _mapper.Map<GuitarDTO>(guitar);
             var realm = Realm.GetInstance();
             realm.Write(() =>
             {
-                realm.Add(guitar);
+                realm.Add(obj);
             });
 
             return guitar.Id;
@@ -37,28 +41,30 @@ namespace Realm_Api_Poc.Controllers
 
         //get guitar object
         [HttpGet]
-        public GuitarDTO GetGuitar(Guid id)
+        public Guitar GetGuitar(Guid id)
         {
             var realm = Realm.GetInstance();
             var specifiGuitarById = realm.Find<GuitarDTO>(id);
-            return specifiGuitarById;
+            return _mapper.Map<Guitar>(specifiGuitarById);
         }
 
         //update guitar object
         [HttpPut]
-        public void UpdateGuitarPrice(Guid id, Double price)
+        public Guitar UpdateGuitarPrice(Guid id, Double price)
         {
             var realm = Realm.GetInstance();
+            GuitarDTO guitarobj = new GuitarDTO();
             realm.Write(() =>
             {
-                var specifiGuitarById = realm.Find<GuitarDTO>(id);
-                specifiGuitarById.Price = price;
+                guitarobj = realm.Find<GuitarDTO>(id);
+                guitarobj.Price = price;
             });
+            return _mapper.Map<Guitar>(guitarobj);
         }
 
         //delete guitar object
         [HttpDelete]
-        public void DeleteGuitarPrice(Guid id)
+        public string DeleteGuitarPrice(Guid id)
         {
             var realm = Realm.GetInstance();
             var specifiGuitarById = realm.Find<GuitarDTO>(id);
@@ -66,6 +72,7 @@ namespace Realm_Api_Poc.Controllers
             {
                 realm.Remove(specifiGuitarById);
             });
+            return "Deleted Guitar "+id.ToString();
         }
 
         // get guitar object

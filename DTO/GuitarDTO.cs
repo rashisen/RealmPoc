@@ -7,7 +7,7 @@ using Realms.Schema;
 public class GuitarDTO : RealmObject
 {
         [PrimaryKey]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         [Required]
         public string Make { get; set; }
         [Required]

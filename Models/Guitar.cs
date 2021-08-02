@@ -11,7 +11,7 @@ namespace Realm_Api_Poc
     [ValidateNever]
     public class Guitar
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Make { get; set; }
         public string Model { get; set; }
         public double Price { get; set; }

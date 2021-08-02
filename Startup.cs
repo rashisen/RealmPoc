@@ -33,6 +33,7 @@ namespace Realm_Api_Poc
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Realm_Api_Poc", Version = "v1" });
             });
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,8 +42,8 @@ namespace Realm_Api_Poc
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // app.UseSwagger();
-                // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Realm_Api_Poc v1"));
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Realm_Api_Poc v1"));
             }
 
             app.UseHttpsRedirection();
